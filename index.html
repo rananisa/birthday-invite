@@ -143,12 +143,12 @@ function getNameFromURL() {
 // =======================
 function checkAccess() {
 
-  const validCodes = ["Süleyman", "Rana", "Sümeyye", "Kevser", "Buse", "Kübra", "Berra", "Merve"];
+  const validNames = ["Süleyman", "Rana", "Sümeyye", "Kevser", "Buse", "Kübra", "Berra", "Merve"];
 
   const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
+  const code = params.get("name");
 
-  if (!code || !validCodes.includes(code)) {
+  if (!name || !validName.includes(name)) {
     document.body.innerHTML = `
       <div style="color:white;text-align:center;margin-top:20vh;font-family:Arial;">
         <h1>💌 Private Invitation</h1>
