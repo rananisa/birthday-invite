@@ -182,6 +182,23 @@ setInterval(function() {
   }
 }, 1000);
 
+  const validCodes = ["Süleyman", "Rana", "Sümeyye", "Kevser", "Buse", "Kübra", "Berra", "Merve"];
+
+function checkAccess() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
+  if (!validCodes.includes(code)) {
+    document.body.innerHTML = `
+      <div style="color:white;text-align:center;margin-top:20vh;font-family:Arial;">
+        <h1>💌 Private Invitation</h1>
+        <p>This event is private.</p>
+      </div>
+    `;
+  }
+}
+
+checkAccess();
 </script>
 
 </body>
