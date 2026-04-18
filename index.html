@@ -72,6 +72,15 @@ button {
   font-size: 14px;
   opacity: 0.8;
 }
+
+/* 💔 SHAKE ANIMATION */
+@keyframes shake {
+  0% { transform: translate(0px, 0px); }
+  25% { transform: translate(4px, 0px); }
+  50% { transform: translate(-4px, 0px); }
+  75% { transform: translate(4px, 0px); }
+  100% { transform: translate(0px, 0px); }
+}
 </style>
 </head>
 
@@ -111,8 +120,10 @@ button {
 
 <script>
 
+// ================= CONFIG =================
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkBOUyplfxgwvE_nRaH7KTUYbNSlJ9YjfM0W-Ex-IAj5NHz3iuNvivTB76HPqb64pLRA/exec";
 
+// ================= DATA =================
 const allowedNames = ["Süleyman", "Rana", "Sümeyye", "Kevser", "Buse", "Kübra", "Berra", "Merve"];
 
 // ================= CONFETTI =================
@@ -124,7 +135,20 @@ function fireConfetti() {
   });
 }
 
-// ================= NAME =================
+// ================= SAD EFFECT =================
+function sadReaction() {
+
+  document.body.style.animation = "shake 0.3s";
+
+  setTimeout(() => {
+    document.body.style.animation = "";
+  }, 300);
+
+  document.getElementById("responseText").innerText =
+    "😭 Üzüldüm... seni orada görmek isterdik";
+}
+
+// ================= URL NAME =================
 function getName() {
   const params = new URLSearchParams(window.location.search);
   return params.get("name");
@@ -146,7 +170,7 @@ function checkAccess(name) {
   return true;
 }
 
-// ================= UI NAME =================
+// ================= UI =================
 function setName(name) {
 
   let text = "Hoş geldin, Özel Davetli 💋";
@@ -166,13 +190,14 @@ function openForm(type) {
   let response = type === "yes" ? "YES" : "NO";
 
   if (type === "yes") fireConfetti();
+  if (type === "no") sadReaction();
 
   fetch(`${SCRIPT_URL}?name=${name}&response=${response}`)
     .then(() => {
       document.getElementById("responseText").innerText =
         type === "yes"
           ? "Katılımın alındı 💋 seni bekliyoruz!"
-          : "Üzüldüm 😭 yine de teşekkür ederiz";
+          : "Teşekkür ederiz 😭";
     });
 }
 
