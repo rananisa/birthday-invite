@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Rana’s Birthday Night</title>
 
+<!-- 🎉 CONFETTI LIB -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <style>
 body {
   margin: 0;
@@ -111,84 +114,41 @@ button {
 
 <script>
 
-// 🔥 URL'DEN İSİM ÇEKME
+// =======================
+// CONFIG
+// =======================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkBOUyplfxgwvE_nRaH7KTUYbNSlJ9YjfM0W-Ex-IAj5NHz3iuNvivTB76HPqb64pLRA/exec";
+
+// =======================
+// CONFETTI
+// =======================
+function fireConfetti() {
+  confetti({
+    particleCount: 120,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+}
+
+// =======================
+// GET NAME
+// =======================
 function getNameFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("name");
 }
 
-// 💋 SAYFA AÇILINCA İSİM YAZ
-window.onload = function () {
-  let name = getNameFromURL();
-  let text = "Hoş geldin, Özel Davetli 💋";
-
-  if (name) {
-    let clean = name.charAt(0).toUpperCase() + name.slice(1);
-    text = `Hoş geldin, ${clean} 💋`;
-  }
-
-  document.getElementById("welcomeText").innerText = text;
-};
-
-
-// 🎉 RSVP BUTONLARI
-function openForm(type) {
-
-  let msg = "";
-
-  if (type === "yes") {
-    msg = "Katılımın alındı 💋 seni bekliyoruz...";
-  } else {
-    msg = "Üzüldüm 😭 bir sonraki partide görüşelim";
-  }
-
-  document.getElementById("responseText").innerText = msg;
-
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkBOUyplfxgwvE_nRaH7KTUYbNSlJ9YjfM0W-Ex-IAj5NHz3iuNvivTB76HPqb64pLRA/exec";
-
-function openForm(type) {
-
-  let name = new URLSearchParams(window.location.search).get("name") || "Unknown";
-
-  let response = type === "yes" ? "YES" : "NO";
-
-  fetch(`${SCRIPT_URL}?name=${name}&response=${response}`)
-    .then(() => {
-      document.getElementById("responseText").innerText =
-        type === "yes"
-          ? "Katılımın alındı 💋 seni bekliyoruz!"
-          : "Üzüldüm 😭 yine de teşekkür ederiz";
-    });
-
-
-
-// ⏳ COUNTDOWN
-let eventDate = new Date("April 30, 2026 20:30:00").getTime();
-
-setInterval(function() {
-  let now = new Date().getTime();
-  let distance = eventDate - now;
-
-  let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  document.getElementById("countdown").innerHTML =
-    `⏳ ${days}g ${hours}s ${minutes}dk ${seconds}sn`;
-
-  if (distance < 0) {
-    document.getElementById("countdown").innerHTML = "🎉 Tonight is the night!";
-  }
-}, 1000);
+// =======================
+// PRIVATE ACCESS
+// =======================
+function checkAccess() {
 
   const validCodes = ["Süleyman", "Rana", "Sümeyye", "Kevser", "Buse", "Kübra", "Berra", "Merve"];
 
-function checkAccess() {
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
 
-  if (!validCodes.includes(code)) {
+  if (!code || !validCodes.includes(code)) {
     document.body.innerHTML = `
       <div style="color:white;text-align:center;margin-top:20vh;font-family:Arial;">
         <h1>💌 Private Invitation</h1>
@@ -198,7 +158,76 @@ function checkAccess() {
   }
 }
 
-checkAccess();
+// =======================
+// NAME UI
+// =======================
+function setName() {
+  let name = getNameFromURL();
+  let text = "Hoş geldin, Özel Davetli 💋";
+
+  if (name) {
+    let clean = name.charAt(0).toUpperCase() + name.slice(1);
+    text = `Hoş geldin, ${clean} 💋`;
+  }
+
+  document.getElementById("welcomeText").innerText = text;
+}
+
+// =======================
+// RSVP
+// =======================
+function openForm(type) {
+
+  let name = getNameFromURL() || "Unknown";
+  let response = type === "yes" ? "YES" : "NO";
+
+  if (type === "yes") fireConfetti();
+
+  fetch(`${SCRIPT_URL}?name=${name}&response=${response}`)
+    .then(() => {
+      document.getElementById("responseText").innerText =
+        type === "yes"
+          ? "Katılımın alındı 💋 seni bekliyoruz!"
+          : "Üzüldüm 😭 yine de teşekkür ederiz";
+    });
+}
+
+// =======================
+// COUNTDOWN
+// =======================
+function startCountdown() {
+
+  let eventDate = new Date("April 30, 2026 20:30:00").getTime();
+
+  setInterval(() => {
+
+    let now = new Date().getTime();
+    let distance = eventDate - now;
+
+    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+      `⏳ ${days}g ${hours}s ${minutes}dk ${seconds}sn`;
+
+    if (distance < 0) {
+      document.getElementById("countdown").innerHTML = "🎉 Tonight is the night!";
+    }
+
+  }, 1000);
+}
+
+// =======================
+// INIT
+// =======================
+window.onload = function () {
+  setName();
+  checkAccess();
+  startCountdown();
+};
+
 </script>
 
 </body>
